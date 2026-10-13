@@ -254,7 +254,7 @@ nav a small + .badge{margin-left:6px}
   nav.addEventListener('click', e => { if (e.target.closest('[data-open-comments]')) setComments(true); });
   // API nhận xét: cùng trang (server.js local hoặc Vercel); trên GitHub Pages thì gọi sang Vercel.
   // Sau khi deploy Vercel, điền link vào REMOTE_API, vd 'https://oracle-diagrams.vercel.app/api/comments'
-  const REMOTE_API = '';
+  const REMOTE_API = 'https://oracle-diagrams.vercel.app/api/comments';
   const API_URL = location.hostname.endsWith('github.io') && REMOTE_API ? REMOTE_API : 'api/comments';
   let canPost = false;
   async function loadComments() {
