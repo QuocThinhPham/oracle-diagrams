@@ -69,6 +69,16 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
 .c-body{padding:8px 12px 20px}
 .c-note{margin:10px 4px 0;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;color:var(--ink-2)}
 .c-note code{font-size:12px}
+.cmt{margin:10px 4px 0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.cmt-meta{display:flex;align-items:baseline;gap:8px;font-size:12px;color:var(--ink-3)}
+.cmt-meta b{font-size:13px;color:var(--ink)}
+.cmt-meta span{margin-left:auto}
+.cmt p{margin:6px 0 0;font-size:13px;color:var(--ink-2);white-space:pre-wrap}
+nav a .badge{margin-left:auto;min-width:18px;padding:0 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:700;text-align:center}
+nav a small + .badge{margin-left:6px}
+.feed a{align-items:flex-start;flex-direction:column;gap:2px}
+.feed a .f-meta{font-size:11px;color:var(--ink-3)}
+.feed a .f-text{font-size:12.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 @media (max-width:860px){
   .comments{position:fixed;inset:auto 0 0 0;width:auto;height:70vh;border-left:0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(20,25,35,.15);z-index:5}
@@ -96,14 +106,14 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
       <select id="pick" aria-label="Chọn sơ đồ"></select>
       <div class="crumb" id="crumb"></div>
       <span class="sp"></span>
-      <button type="button" class="btn" id="toggle-comments" aria-pressed="false" aria-controls="comments">💬 Bình luận</button>
+      <button type="button" class="btn" id="toggle-comments" aria-pressed="false" aria-controls="comments">💬 Nhận xét</button>
       <a class="btn" id="open" href="#" target="_blank" rel="noopener">Mở tab mới ↗</a>
     </div>
     <div class="work">
       <iframe id="view" title="Sơ đồ" allow="clipboard-write"></iframe>
-      <aside class="comments" id="comments" aria-label="Bình luận">
+      <aside class="comments" id="comments" aria-label="Nhận xét">
         <div class="c-head">
-          <div><h2>Bình luận</h2><p id="c-title"></p></div>
+          <div><h2>Nhận xét</h2><p id="c-title"></p></div>
           <button type="button" class="x" id="close-comments" aria-label="Đóng">×</button>
         </div>
         <div class="c-body" id="c-body"></div>
@@ -133,8 +143,10 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
       { id: 'infra-dr', name: 'Exadata Infrastructure', tag: 'DR', file: 'oracle-exacc-infra-dr-light.html' },
     ]},
   ];
-  // Bình luận qua Cusdis (không cần đăng nhập). Dán App ID lấy ở cusdis.com > Website > Embed Code.
-  const CUSDIS = { host: 'https://cusdis.com', appId: '' };
+  // Nhận xét lưu trong comments.json (cùng thư mục): [{ diagram, author, date, text }]
+  let COMMENTS = [];
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const forId = id => COMMENTS.filter(c => c.diagram === id);
 
   const ALL = GROUPS.flatMap(g => g.items.map(it => ({ ...it, group: g.title })));
   const byId = Object.fromEntries(ALL.map(it => [it.id, it]));
@@ -167,8 +179,8 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
     renderComments();
   }
 
-  // --- Bình luận: mỗi sơ đồ một luồng riêng (page-id = id của sơ đồ) ---
-  let current = null, cusdisLoaded = false;
+  // --- Nhận xét: khung bên phải hiện nhận xét của sơ đồ đang xem ---
+  let current = null;
   const app = document.querySelector('.app');
   function setComments(on) {
     app.classList.toggle('show-comments', on);
@@ -177,28 +189,38 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
     if (on) renderComments();
   }
   function renderComments() {
-    if (!current || !app.classList.contains('show-comments')) return;
-    const label = `${current.name}${current.tag ? ' ' + current.tag : ''}`;
-    $('c-title').textContent = `${current.group} · ${label}`;
-    const body = $('c-body');
-    if (!CUSDIS.appId) {
-      body.innerHTML = `<div class="c-note">Chưa cấu hình bình luận. Tạo website trên <b>cusdis.com</b>, rồi dán App ID vào <code>CUSDIS.appId</code> trong <code>index.html</code>.</div>`;
-      return;
-    }
-    const pageUrl = location.href.split('#')[0] + '#' + current.id;
-    body.innerHTML = `<div id="cusdis_thread" data-host="${CUSDIS.host}" data-app-id="${CUSDIS.appId}"
-      data-page-id="${current.id}" data-page-url="${pageUrl}" data-page-title="${label}" data-theme="light"></div>
-      <div class="c-note">Không cần đăng nhập, chỉ cần nhập tên. Bình luận hiện lên sau khi được duyệt.</div>`;
-    if (!cusdisLoaded) {
-      cusdisLoaded = true;
-      const sc = document.createElement('script');
-      sc.src = CUSDIS.host + '/js/cusdis.es.js';
-      sc.async = true; sc.defer = true;
-      document.body.append(sc);
-    } else if (window.renderCusdis) {
-      window.renderCusdis($('cusdis_thread'));
-    }
+    if (!current) return;
+    const list = forId(current.id);
+    $('toggle-comments').innerHTML = `💬 Nhận xét${list.length ? `<span class="count">${list.length}</span>` : ''}`;
+    if (!app.classList.contains('show-comments')) return;
+    $('c-title').textContent = `${current.group} · ${current.name}${current.tag ? ' ' + current.tag : ''}`;
+    $('c-body').innerHTML = list.length
+      ? list.map(c => `<div class="cmt"><div class="cmt-meta"><b>${esc(c.author || 'Ẩn danh')}</b><span>${esc(c.date || '')}</span></div><p>${esc(c.text)}</p></div>`).join('')
+      : `<div class="c-note">Chưa có nhận xét cho sơ đồ này.</div>`;
   }
+  // Mục "Nhận xét" trên menu: số nhận xét từng sơ đồ + các nhận xét mới nhất
+  function renderNavComments() {
+    nav.querySelectorAll('a[data-id]').forEach(a => {
+      a.querySelector('.badge')?.remove();
+      const n = forId(a.dataset.id).length;
+      if (n) a.insertAdjacentHTML('beforeend', `<span class="badge">${n}</span>`);
+    });
+    nav.querySelector('.feed')?.remove();
+    const recent = [...COMMENTS].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 8);
+    nav.insertAdjacentHTML('beforeend', `<div class="group feed">
+      <div class="group-title" style="--c:#b26a00"><i></i>Nhận xét (${COMMENTS.length})</div>
+      ${recent.length ? recent.map(c => {
+        const it = byId[c.diagram];
+        return `<a href="#${esc(c.diagram)}" data-open-comments="1"><span class="f-meta">${esc(c.author || 'Ẩn danh')} · ${esc(it ? it.name + (it.tag ? ' ' + it.tag : '') : c.diagram)}${c.date ? ' · ' + esc(c.date) : ''}</span><span class="f-text">${esc(c.text)}</span></a>`;
+      }).join('') : '<a aria-disabled="true"><span class="f-text">Chưa có nhận xét.</span></a>'}
+    </div>`);
+  }
+  nav.addEventListener('click', e => { if (e.target.closest('[data-open-comments]')) setComments(true); });
+  fetch('comments.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : [])
+    .then(data => { COMMENTS = Array.isArray(data) ? data : []; })
+    .catch(() => { COMMENTS = []; })
+    .finally(() => { renderNavComments(); renderComments(); });
   $('toggle-comments').addEventListener('click', () => setComments(!app.classList.contains('show-comments')));
   $('close-comments').addEventListener('click', () => setComments(false));
 

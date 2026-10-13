@@ -11,3 +11,13 @@ Mở `index.html` để xem toàn bộ: menu bên trái chọn sơ đồ, mỗi 
 | Hạ tầng vật lý · ExaCC | `oracle-exacc-physical-light.html`, `oracle-exacc-infra-dc-light.html`, `oracle-exacc-infra-dr-light.html` |
 
 Thêm sơ đồ mới: tạo file HTML rồi thêm một dòng vào danh sách `GROUPS` trong `index.html`.
+
+## Nhận xét
+
+Nhận xét lưu trong `comments.json`, trang `index.html` đọc file này để hiển thị (mục **Nhận xét** trên menu và nút **💬 Nhận xét** của từng sơ đồ). Thêm nhận xét: thêm một phần tử vào mảng rồi commit + push.
+
+```json
+{ "diagram": "infra-dc", "author": "Tên người nhận xét", "date": "2026-10-13", "text": "Nội dung" }
+```
+
+`diagram` là id sơ đồ (phần sau dấu `#` trên link, vd `digital-exacc`, `dwh-aix`, `infra-dr`). Xem trên máy cần chạy qua web server (vd `python -m http.server`), mở bằng file:// sẽ không đọc được `comments.json`.
