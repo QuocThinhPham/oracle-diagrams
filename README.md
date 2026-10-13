@@ -14,10 +14,21 @@ Thêm sơ đồ mới: tạo file HTML rồi thêm một dòng vào danh sách `
 
 ## Nhận xét
 
-Nhận xét lưu trong `comments.json`, trang `index.html` đọc file này để hiển thị (mục **Nhận xét** trên menu và nút **💬 Nhận xét** của từng sơ đồ). Thêm nhận xét: thêm một phần tử vào mảng rồi commit + push.
+Người xem gõ nhận xét ngay trên trang (nút **💬 Nhận xét** → nhập tên, nội dung → **Gửi nhận xét**). Nhận xét được ghi vào `comments.json` và hiện ở mục **Nhận xét** trên menu.
 
-```json
-{ "diagram": "infra-dc", "author": "Tên người nhận xét", "date": "2026-10-13", "text": "Nội dung" }
+Việc ghi file cần chạy trang qua `server.js` (Node, không cần cài thư viện):
+
+```powershell
+node server.js         # chỉ máy này: http://127.0.0.1:5501/
+node server.js --lan   # cho máy khác cùng mạng LAN/VPN: http://<IP máy>:5501/
 ```
 
-`diagram` là id sơ đồ (phần sau dấu `#` trên link, vd `digital-exacc`, `dwh-aix`, `infra-dr`). Xem trên máy cần chạy qua web server (vd `python -m http.server`), mở bằng file:// sẽ không đọc được `comments.json`.
+Trên GitHub Pages trang chỉ đọc `comments.json` (ô nhập tự ẩn). Muốn đưa nhận xét lên bản online: commit + push `comments.json`.
+
+Mỗi phần tử trong `comments.json`:
+
+```json
+{ "diagram": "infra-dc", "author": "Tên", "date": "2026-10-13 15:30", "text": "Nội dung" }
+```
+
+`diagram` là id sơ đồ (phần sau dấu `#` trên link, vd `digital-exacc`, `dwh-aix`, `infra-dr`).
