@@ -53,7 +53,26 @@ nav a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 #pick{display:none;font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);max-width:100%}
 iframe{flex:1;width:100%;border:0;background:var(--bg)}
 
+.work{flex:1;display:flex;min-height:0}
+.work iframe{flex:1;min-width:0}
+.btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.btn .count{margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:700}
+
+/* khung bình luận */
+.comments{display:none;flex-direction:column;width:380px;border-left:1px solid var(--line);background:var(--surface);overflow:auto}
+.app.show-comments .comments{display:flex}
+.c-head{position:sticky;top:0;z-index:1;display:flex;align-items:flex-start;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.c-head h2{margin:0;font-size:14px;font-weight:700}
+.c-head p{margin:2px 0 0;font-size:12px;color:var(--ink-3)}
+.c-head .x{margin-left:auto;appearance:none;border:0;background:none;font-size:18px;line-height:1;color:var(--ink-3);cursor:pointer;padding:2px 6px;border-radius:6px}
+.c-head .x:hover{background:var(--surface-2);color:var(--ink)}
+.c-body{padding:8px 12px 20px}
+.c-note{margin:10px 4px 0;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;color:var(--ink-2)}
+.c-note code{font-size:12px}
+
 @media (max-width:860px){
+  .comments{position:fixed;inset:auto 0 0 0;width:auto;height:70vh;border-left:0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(20,25,35,.15);z-index:5}
+
   .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .side{display:none}
   #pick{display:block;flex:1}
@@ -77,9 +96,19 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
       <select id="pick" aria-label="Chọn sơ đồ"></select>
       <div class="crumb" id="crumb"></div>
       <span class="sp"></span>
+      <button type="button" class="btn" id="toggle-comments" aria-pressed="false" aria-controls="comments">💬 Bình luận</button>
       <a class="btn" id="open" href="#" target="_blank" rel="noopener">Mở tab mới ↗</a>
     </div>
-    <iframe id="view" title="Sơ đồ" allow="clipboard-write"></iframe>
+    <div class="work">
+      <iframe id="view" title="Sơ đồ" allow="clipboard-write"></iframe>
+      <aside class="comments" id="comments" aria-label="Bình luận">
+        <div class="c-head">
+          <div><h2>Bình luận</h2><p id="c-title"></p></div>
+          <button type="button" class="x" id="close-comments" aria-label="Đóng">×</button>
+        </div>
+        <div class="c-body" id="c-body"></div>
+      </aside>
+    </div>
   </main>
 </div>
 
@@ -104,6 +133,9 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
       { id: 'infra-dr', name: 'Exadata Infrastructure', tag: 'DR', file: 'oracle-exacc-infra-dr-light.html' },
     ]},
   ];
+  // Bình luận qua Cusdis (không cần đăng nhập). Dán App ID lấy ở cusdis.com > Website > Embed Code.
+  const CUSDIS = { host: 'https://cusdis.com', appId: '' };
+
   const ALL = GROUPS.flatMap(g => g.items.map(it => ({ ...it, group: g.title })));
   const byId = Object.fromEntries(ALL.map(it => [it.id, it]));
   const byFile = Object.fromEntries(ALL.map(it => [it.file, it]));
@@ -131,7 +163,44 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
     document.title = `${it.name}${it.tag ? ' ' + it.tag : ''} · Sơ đồ kiến trúc Oracle`;
     if (!fromFrame && !view.src.endsWith(it.file)) view.src = it.file;
     try { localStorage.setItem('diagram-index', it.id); } catch (e) {}
+    current = it;
+    renderComments();
   }
+
+  // --- Bình luận: mỗi sơ đồ một luồng riêng (page-id = id của sơ đồ) ---
+  let current = null, cusdisLoaded = false;
+  const app = document.querySelector('.app');
+  function setComments(on) {
+    app.classList.toggle('show-comments', on);
+    $('toggle-comments').setAttribute('aria-pressed', String(on));
+    try { localStorage.setItem('diagram-comments', on ? '1' : '0'); } catch (e) {}
+    if (on) renderComments();
+  }
+  function renderComments() {
+    if (!current || !app.classList.contains('show-comments')) return;
+    const label = `${current.name}${current.tag ? ' ' + current.tag : ''}`;
+    $('c-title').textContent = `${current.group} · ${label}`;
+    const body = $('c-body');
+    if (!CUSDIS.appId) {
+      body.innerHTML = `<div class="c-note">Chưa cấu hình bình luận. Tạo website trên <b>cusdis.com</b>, rồi dán App ID vào <code>CUSDIS.appId</code> trong <code>index.html</code>.</div>`;
+      return;
+    }
+    const pageUrl = location.href.split('#')[0] + '#' + current.id;
+    body.innerHTML = `<div id="cusdis_thread" data-host="${CUSDIS.host}" data-app-id="${CUSDIS.appId}"
+      data-page-id="${current.id}" data-page-url="${pageUrl}" data-page-title="${label}" data-theme="light"></div>
+      <div class="c-note">Không cần đăng nhập, chỉ cần nhập tên. Bình luận hiện lên sau khi được duyệt.</div>`;
+    if (!cusdisLoaded) {
+      cusdisLoaded = true;
+      const sc = document.createElement('script');
+      sc.src = CUSDIS.host + '/js/cusdis.es.js';
+      sc.async = true; sc.defer = true;
+      document.body.append(sc);
+    } else if (window.renderCusdis) {
+      window.renderCusdis($('cusdis_thread'));
+    }
+  }
+  $('toggle-comments').addEventListener('click', () => setComments(!app.classList.contains('show-comments')));
+  $('close-comments').addEventListener('click', () => setComments(false));
 
   pick.addEventListener('change', () => { location.hash = pick.value; });
   addEventListener('hashchange', () => show(location.hash.slice(1)));
@@ -147,6 +216,7 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
     }
   });
 
+  try { if (localStorage.getItem('diagram-comments') === '1') app.classList.add('show-comments'), $('toggle-comments').setAttribute('aria-pressed', 'true'); } catch (e) {}
   let start = location.hash.slice(1);
   if (!byId[start]) { try { start = localStorage.getItem('diagram-index') || ''; } catch (e) {} }
   show(byId[start] ? start : ALL[0].id);
