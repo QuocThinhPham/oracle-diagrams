@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ExaCC Physical DC–DR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef0f4;
+  --canvas:#fafbfc;
+  --dot:#dde1e7;
+  --surface:#ffffff;
+  --surface-2:#f6f7f9;
+  --chip:#f2f4f7;
+  --ink:#151922;
+  --ink-2:#4b5263;
+  --ink-3:#7d8495;
+  --line:#e3e6eb;
+  --line-2:#cdd2da;
+  --accent:#c74634;
+  --accent-soft:#fbebe8;
+  --dg:#2f6bd8;
+  --ok:#1f9d6b;
+  --client:#2f6bd8;
+  --backup:#0f8a7e;
+  --admin:#7d8495;
+  --oci:#b26a00;
+  --oci-soft:#fdf1e0;
+  --wan:#7a4cc2;
+  --wan-soft:#f1ebfb;
+  --rack:#2b2f38;
+  --u-db:#c74634;
+  --u-st:#7a4cc2;
+  --u-sw:#4b5263;
+  --shadow:0 1px 2px rgba(20,25,35,.06),0 6px 16px -6px rgba(20,25,35,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.page{padding:28px 32px 32px}
+.wrap{max-width:1720px;margin:0 auto}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 40px;margin-bottom:18px}
+.switch{margin-left:10px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--dg);text-decoration:none}
+.switch:hover{text-decoration:underline}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+h1{margin:6px 0;font-size:24px;line-height:1.25;font-weight:700;letter-spacing:-.015em;text-wrap:balance}
+.sub{margin:0;color:var(--ink-2);max-width:82ch}
+.sub b{color:var(--ink);font-weight:600}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0;list-style:none;font-size:12.5px;color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:34px;border-top:4px solid;border-radius:2px}
+.sw-client{border-color:var(--client)}
+.sw-backup{border-color:var(--backup)}
+.sw-admin{border-top-style:dashed;border-color:var(--admin)}
+.sw-oci{border-color:var(--oci)}
+.sw-wan{border-top-style:dashed;border-color:var(--wan)}
+.seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.seg button{appearance:none;border:0;background:none;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-2);padding:5px 12px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+.frame{background-color:var(--canvas);background-image:radial-gradient(var(--dot) 1px,transparent 1.3px);background-size:20px 20px;border:1px solid var(--line);border-radius:20px;overflow:auto}
+.stage{margin:0 auto;overflow:hidden}
+.diagram{
+  position:relative;width:max-content;transform-origin:0 0;
+  display:grid;
+  grid-template-columns:auto 190px auto;
+  grid-template-rows:auto 1fr;
+  padding:30px 36px 36px;
+}
+.hint{margin:12px 2px 0;font-size:12.5px;color:var(--ink-3)}
+
+.kicker{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.icon-tile{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 8px;border-radius:12px}
+.sec-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.sec-label .count{letter-spacing:.04em;color:var(--ink-2)}
+code.tbd,.tbd{color:var(--ink-3);font-style:italic;font-weight:500}
+
+/* OCI region */
+.oci{grid-column:2;grid-row:1;justify-self:center;width:230px;margin-bottom:46px;padding:12px 14px;text-align:center;border-color:color-mix(in srgb,var(--oci) 40%,var(--line))}
+.oci .icon-tile{width:40px;height:40px;margin-bottom:6px;background:var(--oci-soft);color:var(--oci)}
+.oci .icon-tile svg{width:26px;height:20px}
+.oci b{display:block;font-size:13.5px;font-weight:700}
+.oci small{display:block;font-size:11px;color:var(--ink-3)}
+
+/* sites */
+.site{grid-row:2;display:flex;flex-direction:column;padding:16px 18px 18px;border-radius:20px;border:1.5px dashed var(--site-line);background:var(--site-bg)}
+.site.dc{grid-column:1;--site-line:color-mix(in srgb,var(--accent) 35%,var(--line-2));--site-bg:color-mix(in srgb,var(--accent) 3.5%,var(--canvas))}
+.site.dr{grid-column:3;--site-line:color-mix(in srgb,var(--dg) 38%,var(--line-2));--site-bg:color-mix(in srgb,var(--dg) 4%,var(--canvas))}
+.site-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:14px}
+.site.dr .site-head{justify-content:flex-end}  /* chừa chỗ cho đường ra OCI ở phía giữa */
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;font-weight:700;letter-spacing:.04em}
+.badge em{font-style:normal;font-weight:500;color:var(--ink-3)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
+.dot.ok{--c:var(--ok)}
+.dot.sb{--c:var(--dg)}
+.site-title{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+
+/* mạng khách hàng */
+.netbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface)}
+.netbar svg{flex:none;width:18px;height:18px;color:var(--ink-2)}
+.netbar b{font-size:13px;font-weight:700}
+.netbar small{display:block;font-size:11px;color:var(--ink-3)}
+.netbar .nets{margin-left:auto;display:flex;gap:5px}
+.net-chip{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 11%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.net-chip.client{--c:var(--client)}
+.net-chip.backup{--c:var(--backup)}
+.net-chip.admin{--c:var(--admin)}
+
+/* hàng rack */
+.hall{display:flex;gap:12px;align-items:flex-start;margin-top:52px}
+.rack{width:220px;padding:0 0 8px;border:2px solid var(--rack);border-radius:10px;background:var(--surface);overflow:hidden}
+.rack-top{padding:7px 8px 6px;background:var(--rack);color:#fff;text-align:center}
+.rack-top b{display:block;font-size:12px;font-weight:700;letter-spacing:.02em}
+.rack-top small{display:block;font-size:10.5px;opacity:.75}
+.units{display:flex;flex-direction:column;gap:3px;padding:8px 8px 0}
+.u{display:flex;align-items:center;gap:6px;padding:3px 7px;border-radius:5px;border:1px solid var(--line);border-left:3px solid var(--uc);background:var(--surface-2);font-size:11px;font-weight:500;color:var(--ink-2);white-space:nowrap}
+.u.db{--uc:var(--u-db)}
+.u.st{--uc:var(--u-st)}
+.u.sw{--uc:var(--u-sw)}
+.u.pdu{--uc:var(--line-2)}
+.u em{margin-left:auto;font-style:normal;font-size:10.5px;color:var(--ink-3)}
+.u-sum{display:flex;flex-direction:column;gap:3px;padding:8px 8px 0}
+
+.cps{width:156px;padding:10px;border-style:dashed;border-color:var(--line-2)}
+.cps .kicker{justify-content:center;margin-bottom:6px}
+.cps-srv{display:flex;align-items:center;gap:5px;padding:5px 6px;white-space:nowrap;margin-top:4px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);font-size:11px;color:var(--ink-2)}
+.cps-srv svg{flex:none;width:13px;height:13px;color:var(--ink-3)}
+.cps-srv code{margin-left:auto;font-size:10px;color:var(--ink)}
+
+.vmcs{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line-2)}
+.vmc-chips{display:flex;flex-wrap:wrap;gap:6px}
+.vmc-chip{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}
+
+/* WAN DC–DR */
+.mid{grid-column:2;grid-row:2;position:relative}
+.wan{position:absolute;left:14px;right:14px;top:0;padding:10px 8px;text-align:center;border-color:color-mix(in srgb,var(--wan) 40%,var(--line))}
+.wan .icon-tile{width:34px;height:34px;margin-bottom:4px;border-radius:10px;background:var(--wan-soft);color:var(--wan)}
+.wan .icon-tile svg{width:18px;height:18px}
+.wan b{display:block;font-size:12.5px;font-weight:700}
+.wan small{display:block;font-size:10.5px;color:var(--ink-3)}
+
+/* wires */
+.wires{position:absolute;left:0;top:0;z-index:2;pointer-events:none;overflow:visible}
+.wire{transition:opacity .2s}
+.wire .base{fill:none;stroke-width:1.75}
+.wire .flow{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:0 14;animation:flow 1.1s linear infinite}
+.wire.w-client .base{stroke:var(--client)}
+.wire.w-backup .base{stroke:var(--backup)}
+.wire.w-admin .base{stroke:var(--admin);stroke-dasharray:4 4}
+.wire.w-up .base{stroke:var(--ink-2);stroke-width:2.25}
+.wire.w-client .flow,.wire.w-backup .flow,.wire.w-admin .flow,.wire.w-up .flow{display:none}
+.wire.w-oci .base{stroke:color-mix(in srgb,var(--oci) 70%,transparent)}
+.wire.w-oci .flow{stroke:var(--oci)}
+.wire.w-wan .base{stroke:color-mix(in srgb,var(--wan) 70%,transparent);stroke-dasharray:6 5}
+.wire.w-wan .flow{stroke:var(--wan)}
+#m-oci path{fill:var(--oci)}
+#m-wan path{fill:var(--wan)}
+@keyframes flow{to{stroke-dashoffset:-14}}
+@media (prefers-reduced-motion:reduce){.wire .flow{display:none}}
+
+[data-lane]{cursor:default;transition:border-color .2s}
+.diagram[data-focus] .wire{opacity:.12}
+.diagram[data-focus="dc"] .wire.ldc,
+.diagram[data-focus="dr"] .wire.ldr,
+.diagram[data-focus="oci"] .wire.loci,
+.diagram[data-focus="wan"] .wire.lwan{opacity:1}
+.diagram[data-focus="oci"] [data-lane="oci"]{border-color:var(--oci)}
+.diagram[data-focus="wan"] [data-lane="wan"]{border-color:var(--wan)}
+
+/* Tổng quan: chỉ giữ khối chính; Chi tiết: từng thiết bị, IP, loại mạng */
+html.overview .units,
+html.overview .netbar .nets,
+html.overview .cps-srv code,
+html.overview .legend li:has(.sw-client),
+html.overview .legend li:has(.sw-backup),
+html.overview .legend li:has(.sw-admin){display:none}
+html:not(.overview) .u-sum,
+html:not(.overview) .legend li:has(.sw-up){display:none}
+.sw-up{border-color:var(--ink-2)}
+
+/* nút xuất ảnh */
+.actions{display:inline-flex;gap:6px}
+.btn{appearance:none;font:inherit;font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--line-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+html.snap .wire .flow{display:none}
+html.snap .diagram{padding-top:62px}
+.snap-legend{position:absolute;top:22px;right:36px;font-size:13.5px;font-weight:500;color:var(--ink)}
+
+@media (max-width:640px){
+  .page{padding:20px 16px 24px}
+  h1{font-size:20px}
+}
+html.export body{background:#fff}
+html.export .page{padding:16px}
+html.export .page-head{justify-content:flex-end;margin-bottom:4px}
+html.export .page-head>div:first-child,html.export .seg,html.export .hint,html.export .actions{display:none}
+html.export .frame{border:0;border-radius:0;background:#fff;overflow:visible}
+html.export .wire .flow{display:none}
+@media print{
+  body{background:#fff}
+  .seg,.hint,.actions{display:none}
+  .frame{border:0;background:none}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+</head>
+<body>
+
+<svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cloud" viewBox="0 0 26 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 18.5h12a5 5 0 0 0 .6-9.96A7 7 0 0 0 6.6 7.1 5.7 5.7 0 0 0 7.5 18.5Z"/>
+  </symbol>
+  <symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3.5" width="18" height="7.5" rx="1.8"/>
+    <rect x="3" y="13" width="18" height="7.5" rx="1.8"/>
+    <path d="M7 7.25h.01M7 16.75h.01"/>
+  </symbol>
+  <symbol id="i-net" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="2.5" width="6" height="5" rx="1"/>
+    <rect x="2.5" y="16.5" width="6" height="5" rx="1"/>
+    <rect x="15.5" y="16.5" width="6" height="5" rx="1"/>
+    <path d="M12 7.5v4.5M5.5 16.5V12h13v4.5"/>
+  </symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/>
+    <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/>
+  </symbol>
+</svg>
+
+<div class="page">
+<div class="wrap">
+
+  <header class="page-head">
+    <div>
+      <div class="eyebrow">Kiến trúc vật lý · Oracle Exadata Cloud@Customer <a class="switch" href="oracle-digital-dc-dr-light.html">Xem kiến trúc logic →</a> <a class="switch" href="oracle-exacc-infra-dc-light.html">· Chi tiết DC</a> <a class="switch" href="oracle-exacc-infra-dr-light.html">· Chi tiết DR</a></div>
+      <h1>Hạ tầng Exadata Cloud@Customer — DC &amp; DR</h1>
+      <p class="sub">Mỗi site là <b>một tủ rack Exadata X11</b> (DB server, Cell server, switch RoCE nội bộ) cùng cặp <b>Control Plane Server</b>. Tủ rack nối vào mạng khách hàng qua mạng Client, Backup và Admin; CPS mở kết nối ra <b>OCI region</b> để nhận lệnh quản trị. DC và DR nối với nhau qua <b>WAN</b> để truyền redo Data Guard.</p>
+    </div>
+    <div class="tools">
+      <ul class="legend">
+        <li><span class="sw sw-up"></span>Uplink mạng khách hàng</li>
+        <li><span class="sw sw-client"></span>Client network</li>
+        <li><span class="sw sw-backup"></span>Backup network</li>
+        <li><span class="sw sw-admin"></span>Admin / ILOM</li>
+        <li><span class="sw sw-oci"></span>CPS → OCI (HTTPS 443)</li>
+        <li><span class="sw sw-wan"></span>WAN DC–DR (Data Guard)</li>
+      </ul>
+      <div class="seg" role="group" aria-label="Mức chi tiết">
+        <button type="button" data-view="overview" aria-pressed="true">Tổng quan</button>
+        <button type="button" data-view="detail" aria-pressed="false">Chi tiết</button>
+      </div>
+      <div class="seg" role="group" aria-label="Thu phóng sơ đồ">
+        <button type="button" data-mode="fit" aria-pressed="true">Vừa khung</button>
+        <button type="button" data-mode="full" aria-pressed="false">100%</button>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="btn-copy" title="Chụp sơ đồ thành ảnh PNG và đưa vào clipboard, dán thẳng vào PowerPoint">Sao chép ảnh</button>
+        <button type="button" class="btn" id="btn-png">Tải PNG</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="frame" id="frame">
+  <div class="stage" id="stage">
+  <div class="diagram" id="diagram">
+    <svg class="wires" id="wires" aria-hidden="true"></svg>
+
+    <!-- OCI region -->
+    <div class="card oci" id="oci" data-lane="oci">
+      <span class="icon-tile"><svg><use href="#i-cloud"/></svg></span>
+      <b>OCI Control Plane</b>
+      <small>Oracle Cloud region <span class="tbd">(tên region)</span></small>
+      <small>qua Internet / FastConnect <span class="tbd">(cập nhật)</span></small>
+    </div>
+
+    <!-- DC -->
+    <section class="site dc" id="site-dc" data-lane="dc">
+      <header class="site-head">
+        <span class="badge"><i class="dot ok"></i>DC <em>· Primary</em></span>
+        <span class="site-title">Datacenter <span class="tbd">(tên / địa điểm)</span></span>
+      </header>
+      <div class="netbar" id="net-dc">
+        <svg><use href="#i-net"/></svg>
+        <div><b>Mạng khách hàng</b><small>Core switch / Firewall <span class="tbd">(cập nhật)</span></small></div>
+        <span class="nets"><span class="net-chip client">Client</span><span class="net-chip backup">Backup</span><span class="net-chip admin">Admin</span></span>
+      </div>
+
+      <div class="hall">
+        <!--RACKS-DC-->
+        <div class="card cps" id="cps-dc" data-lane="oci">
+          <div class="kicker">Control Plane Servers</div>
+          <div class="cps-srv"><svg><use href="#i-server"/></svg>CPS 1<code>172.27.9.13</code></div>
+          <div class="cps-srv"><svg><use href="#i-server"/></svg>CPS 2<code>172.27.9.14</code></div>
+        </div>
+      </div>
+
+      <div class="vmcs">
+        <div class="sec-label"><span>VM Cluster chạy trên hạ tầng DC</span></div>
+        <div class="vmc-chips"><span class="vmc-chip">DC-VMC-DIGITAL</span><span class="vmc-chip">DC-VMC-CARD</span><span class="vmc-chip">DC-VMC-DWH</span></div>
+      </div>
+    </section>
+
+    <!-- WAN DC–DR -->
+    <div class="mid" id="mid">
+      <div class="card wan" id="wan" data-lane="wan">
+        <span class="icon-tile"><svg><use href="#i-link"/></svg></span>
+        <b>WAN DC–DR</b>
+        <small>redo Data Guard</small>
+        <small class="tbd">băng thông · cập nhật</small>
+      </div>
+    </div>
+
+    <!-- DR -->
+    <section class="site dr" id="site-dr" data-lane="dr">
+      <header class="site-head">
+        <span class="badge"><i class="dot sb"></i>DR <em>· Standby</em></span>
+        <span class="site-title">Datacenter <span class="tbd">(tên / địa điểm)</span></span>
+      </header>
+      <div class="netbar" id="net-dr">
+        <svg><use href="#i-net"/></svg>
+        <div><b>Mạng khách hàng</b><small>Core switch / Firewall <span class="tbd">(cập nhật)</span></small></div>
+        <span class="nets"><span class="net-chip client">Client</span><span class="net-chip backup">Backup</span><span class="net-chip admin">Admin</span></span>
+      </div>
+
+      <div class="hall">
+        <div class="card cps" id="cps-dr" data-lane="oci">
+          <div class="kicker">Control Plane Servers</div>
+          <div class="cps-srv"><svg><use href="#i-server"/></svg>CPS 1<code>172.29.6.13</code></div>
+          <div class="cps-srv"><svg><use href="#i-server"/></svg>CPS 2<code>172.29.6.14</code></div>
+        </div>
+        <!--RACKS-DR-->
+      </div>
+
+      <div class="vmcs">
+        <div class="sec-label"><span>VM Cluster chạy trên hạ tầng DR</span></div>
+        <div class="vmc-chips"><span class="vmc-chip">DR-VMC-DIGITAL</span><span class="vmc-chip">DR-VMC-CARD</span><span class="vmc-chip">DR-VMC-DWH</span></div>
+      </div>
+    </section>
+  </div>
+  </div>
+  </div>
+
+  <p class="hint">Rê chuột lên từng site, OCI hoặc WAN để làm nổi bật kết nối. Bấm “Chi tiết” để xem từng thiết bị trong rack, IP CPS và từng loại mạng; “Sao chép ảnh” rồi Ctrl+V để đưa vào PowerPoint.</p>
+</div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+
+  // Mỗi site một tủ rack Exadata; số DB server / Cell server của từng site sửa ở đây
+  const RACKS = {
+    dc: [{ name: 'Tủ rack DC', db: 3, st: 3 }],
+    dr: [{ name: 'Tủ rack DR', db: 2, st: 3 }],
+  };
+  const rackHtml = (site, r, i) => {
+    const units = [
+      `<div class="u sw">Mgmt switch</div>`,
+      `<div class="u sw">RoCE switch A</div>`,
+      `<div class="u sw">RoCE switch B</div>`,
+      ...Array.from({ length: r.db }, (_, k) => `<div class="u db">DB server ${k + 1}<em>X11M</em></div>`),
+      ...Array.from({ length: r.st }, (_, k) => `<div class="u st">Cell server ${k + 1}<em>X11M</em></div>`),
+      `<div class="u pdu">PDU A · PDU B</div>`,
+    ].join('');
+    return `<div class="rack" id="rack-${site}-${i}">
+      <div class="rack-top"><b>${r.name}</b><small>Exadata X11 · ExaCC</small></div>
+      <div class="units">${units}</div>
+      <div class="u-sum"><div class="u db">DB server ×${r.db}</div><div class="u st">Cell server ×${r.st}</div><div class="u sw">RoCE · Mgmt switch</div></div>
+    </div>`;
+  };
+  ['dc', 'dr'].forEach(site => {
+    const hall = document.querySelector(`#site-${site} .hall`);
+    const html = RACKS[site].map((r, i) => rackHtml(site, r, i)).join('');
+    if (site === 'dc') hall.insertAdjacentHTML('afterbegin', html);
+    else hall.insertAdjacentHTML('beforeend', html);
+  });
+
+  const frame = $('frame'), stage = $('stage'), diagram = $('diagram'), svg = $('wires');
+  let mode = null;
+  try { mode = localStorage.getItem('exacc-diagram-zoom'); } catch (e) {}
+  if (mode !== 'fit' && mode !== 'full') mode = innerWidth < 900 ? 'full' : 'fit';
+  if (new URLSearchParams(location.search).has('export')) {
+    document.documentElement.classList.add('export');
+    mode = 'full';
+  }
+
+  // Tổng quan / Chi tiết (?detail hoặc ?overview để ép khi xuất ảnh)
+  let view = 'overview';
+  try { view = localStorage.getItem('diagram-view') || view; } catch (e) {}
+  const qs = new URLSearchParams(location.search);
+  if (qs.has('detail')) view = 'detail';
+  if (qs.has('overview')) view = 'overview';
+  const isOverview = () => document.documentElement.classList.contains('overview');
+  function setView(v) {
+    view = v === 'detail' ? 'detail' : 'overview';
+    document.documentElement.classList.toggle('overview', view === 'overview');
+    document.querySelectorAll('.seg button[data-view]').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  }
+  setView(view);
+  document.querySelectorAll('.seg button[data-view]').forEach(b => b.addEventListener('click', () => {
+    setView(b.dataset.view);
+    try { localStorage.setItem('diagram-view', view); } catch (e) {}
+    draw(); fit();
+  }));
+
+  const DEFS = `<defs>
+    <marker id="m-oci" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,.8 10,5 0,9.2 2.6,5Z"/></marker>
+    <marker id="m-wan" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,.8 10,5 0,9.2 2.6,5Z"/></marker>
+  </defs>`;
+
+  // Position relative to the diagram, in untransformed layout pixels.
+  function box(el) {
+    let x = 0, y = 0, n = el;
+    while (n && n !== diagram) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+    const w = el.offsetWidth, h = el.offsetHeight;
+    return { x, y, w, h, r: x + w, b: y + h, cx: x + w / 2, cy: y + h / 2 };
+  }
+
+  const wire = (d, kind, lane, arrow = false) =>
+    `<g class="wire w-${kind} l${lane}"><path class="base" d="${d}"${arrow ? ` marker-end="url(#m-${kind})"` : ''}/><path class="flow" d="${d}"/></g>`;
+
+  function draw() {
+    const W = diagram.offsetWidth, H = diagram.offsetHeight;
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const ov = isOverview();
+
+    let out = DEFS;
+    // Rack và CPS nối lên mạng khách hàng
+    ['dc', 'dr'].forEach(site => {
+      const bar = box($('net-' + site));
+      document.querySelectorAll(`#site-${site} .rack`).forEach(r => {
+        const k = box(r);
+        if (ov) out += wire(`M${k.cx},${k.y}V${bar.b}`, 'up', site);
+        else [['client', -16], ['backup', 0], ['admin', 16]].forEach(([n, dx]) =>
+          out += wire(`M${k.cx + dx},${k.y}V${bar.b}`, n, site));
+      });
+      const c = box($('cps-' + site));
+      out += wire(`M${c.cx},${c.y}V${bar.b}`, ov ? 'up' : 'admin', site);
+    });
+
+    // CPS ra OCI qua mạng khách hàng (Internet / FastConnect)
+    const o = box($('oci')), bdc = box($('net-dc')), bdr = box($('net-dr'));
+    const xdc = bdc.r - 24, xdr = bdr.x + 24, R = 12;
+    out += wire(`M${xdc},${bdc.y}V${o.cy + R}Q${xdc},${o.cy} ${xdc + R},${o.cy}H${o.x - 1}`, 'oci', 'oci', true);
+    out += wire(`M${xdr},${bdr.y}V${o.cy + R}Q${xdr},${o.cy} ${xdr - R},${o.cy}H${o.r + 1}`, 'oci', 'oci', true);
+
+    // WAN DC–DR ngang tầm mạng khách hàng
+    const wan = $('wan');
+    wan.style.top = (bdc.cy - box($('mid')).y - wan.offsetHeight / 2) + 'px';
+    const w = box(wan);
+    out += wire(`M${bdc.r},${w.cy}H${w.x - 1}`, 'wan', 'wan', true);
+    out += wire(`M${w.r},${w.cy}H${bdr.x - 1}`, 'wan', 'wan', true);
+    svg.innerHTML = out;
+  }
+
+  function fit() {
+    const W = diagram.offsetWidth, H = diagram.offsetHeight;
+    let s = 1;
+    if (mode === 'fit') {
+      // Vừa cả chiều ngang lẫn chiều cao cửa sổ, không cần zoom trình duyệt
+      const top = frame.getBoundingClientRect().top + scrollY;
+      const hint = document.querySelector('.hint');
+      const below = (hint ? hint.offsetHeight + 12 : 0) + parseFloat(getComputedStyle(document.querySelector('.page')).paddingBottom);
+      const availH = innerHeight - top - below - 2;
+      s = Math.min(1, frame.clientWidth / W, availH > 200 ? availH / H : 1);
+    }
+    diagram.style.transform = s < 1 ? `scale(${s})` : '';
+    stage.style.width = Math.floor(W * s) + 'px';
+    stage.style.height = Math.floor(H * s) + 'px';
+    document.querySelectorAll('.seg button[data-mode]').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  }
+
+  document.querySelectorAll('.seg button[data-mode]').forEach(b => b.addEventListener('click', () => {
+    mode = b.dataset.mode;
+    try { localStorage.setItem('exacc-diagram-zoom', mode); } catch (e) {}
+    fit();
+  }));
+
+  diagram.addEventListener('pointerover', e => {
+    const el = e.target.closest('[data-lane]');
+    if (el) diagram.dataset.focus = el.dataset.lane;
+    else delete diagram.dataset.focus;
+  });
+  diagram.addEventListener('pointerleave', () => delete diagram.dataset.focus);
+
+  // --- Xuất ảnh để dán vào PPTX ---
+  // Icon dùng <use href="#...">, nên sprite phải nằm trong vùng được chụp.
+  diagram.prepend($('sprite'));
+
+  async function snapshot() {
+    const legend = document.querySelector('.legend').cloneNode(true);
+    legend.classList.add('snap-legend');
+    document.documentElement.classList.add('snap');
+    diagram.append(legend);
+    draw();
+    try {
+      if (document.fonts) await document.fonts.ready;
+      return await htmlToImage.toBlob(diagram, {
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        width: diagram.offsetWidth,
+        height: diagram.offsetHeight,
+        style: { transform: 'none' }
+      });
+    } finally {
+      legend.remove();
+      document.documentElement.classList.remove('snap');
+      draw(); fit();
+    }
+  }
+
+  function savePng(blob) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = document.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function flash(btn, text) {
+    const old = btn.dataset.label || (btn.dataset.label = btn.textContent);
+    btn.textContent = text;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { btn.textContent = old; }, 2500);
+  }
+
+  async function run(btn, job) {
+    if (!window.htmlToImage) { flash(btn, 'Chưa tải được thư viện (cần mạng)'); return; }
+    btn.disabled = true;
+    try { await job(); } catch (err) { console.error(err); flash(btn, 'Lỗi, xem Console'); }
+    finally { btn.disabled = false; }
+  }
+
+  $('btn-copy').addEventListener('click', e => run(e.currentTarget, async () => {
+    const btn = $('btn-copy');
+    btn.textContent = 'Đang tạo ảnh…';
+    try {
+      // Truyền Promise vào ClipboardItem để vẫn giữ quyền ghi clipboard khi chờ chụp ảnh
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': snapshot() })]);
+      flash(btn, 'Đã sao chép ✓  Ctrl+V vào PPT');
+    } catch (err) {
+      console.warn('Không ghi được clipboard, chuyển sang tải file', err);
+      savePng(await snapshot());
+      flash(btn, 'Không copy được, đã tải PNG');
+    }
+  }));
+  $('btn-png').addEventListener('click', e => run(e.currentTarget, async () => savePng(await snapshot())));
+
+  const update = () => { draw(); fit(); };
+  new ResizeObserver(update).observe(frame);
+  addEventListener('resize', fit);
+  new ResizeObserver(update).observe(diagram);
+  update();
+  if (document.fonts) document.fonts.ready.then(update);
+})();
+</script>
+</body>
+</html>
