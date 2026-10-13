@@ -32,3 +32,14 @@ Mỗi phần tử trong `comments.json`:
 ```
 
 `diagram` là id sơ đồ (phần sau dấu `#` trên link, vd `digital-exacc`, `dwh-aix`, `infra-dr`).
+
+## Deploy Vercel (nhận xét trên bản online)
+
+Vercel phục vụ trang và hàm `api/comments.js`; hàm ghi nhận xét thẳng vào `comments.json` trong repo GitHub.
+
+1. Tạo fine-grained token GitHub: chỉ repo `oracle-diagrams`, quyền **Contents: Read and write**.
+2. vercel.com → Add New Project → Import repo `oracle-diagrams` (Framework: Other, không cần build).
+3. Settings → Environment Variables: `GITHUB_TOKEN` = token ở bước 1 → Redeploy.
+4. (Tuỳ chọn) để bản GitHub Pages cũng gửi được nhận xét: điền link API Vercel vào `REMOTE_API` trong `index.html`.
+
+Commit chỉ đổi `comments.json` không kích hoạt deploy lại (`vercel.json` → `ignoreCommand`).

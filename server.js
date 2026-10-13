@@ -19,7 +19,7 @@ const TYPES = {
   '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
   '.md': 'text/markdown; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
 };
-const HIDDEN = new Set(['server.js', '.git', '.gitignore', 'node_modules', '_old']);
+const HIDDEN = new Set(['server.js', 'api', '.git', '.gitignore', '.vercelignore', 'vercel.json', 'node_modules', '_old']);
 
 const readComments = () => {
   try { const d = JSON.parse(fs.readFileSync(FILE, 'utf8')); return Array.isArray(d) ? d : []; }
