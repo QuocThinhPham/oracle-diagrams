@@ -312,7 +312,7 @@ html.export .wire .flow{display:none}
     <div>
       <div class="eyebrow">Sơ đồ kiến trúc · Oracle Database 19c <a class="switch" href="oracle-digital-onprem-aix-light.html">← Hiện trạng AIX: Digital</a> <a class="switch" href="oracle-hub-onprem-aix-light.html">· Hub</a></div>
       <h1>Digital (Omnichannel) trên Exadata Cloud@Customer — DC &amp; DR</h1>
-      <p class="sub">Core Banking, DigiCore (LosDB) và BankWork đồng bộ dữ liệu sang cụm <b>DC-VMC-DIGITAL</b> qua Oracle GoldenGate; site DC nhân bản sang <b>DR-VMC-DIGITAL</b> bằng Oracle Data Guard, cho cả <b>Digital</b> và <b>bvbhub</b>.</p>
+      <p class="sub">Core Banking, DigiCore (LosDB) và BankWork đồng bộ dữ liệu sang cụm <b>DC-VMC-DIGITAL</b> qua Oracle GoldenGate; site DC nhân bản sang <b>DR-VMC-DIGITAL</b> bằng Oracle Data Guard, cho cả <b>digital</b> và <b>bvbhub</b>.</p>
     </div>
     <div class="tools">
       <ul class="legend">
@@ -430,10 +430,10 @@ html.export .wire .flow{display:none}
             <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19c</small></div></div>
           </div>
           <table class="dbtab">
-            <thead><tr><th>Database / SID</th><th>Pluggable (PDB)</th></tr></thead>
+            <thead><tr><th>CDB</th><th>PDB</th><th>Phiên bản</th></tr></thead>
             <tbody>
-              <tr><td>Digital</td><td>Omnichannel</td></tr>
-              <tr><td>bvbhub</td><td>vccbhub</td></tr>
+              <tr><td>digital</td><td>omnichannel</td><td><span class="tbd">cập nhật</span></td></tr>
+              <tr><td>bvbhub</td><td>vccbhub</td><td>19.8</td></tr>
             </tbody>
           </table>
           <div class="net">
@@ -460,7 +460,7 @@ html.export .wire .flow{display:none}
         <span class="icon-tile"><svg><use href="#i-shield"/></svg></span>
         <b>Data Guard</b>
         <small>Oracle</small>
-        <div class="dg-dbs"><span>Digital</span><span>bvbhub</span></div>
+        <div class="dg-dbs"><span>digital</span><span>bvbhub</span></div>
         <div class="meta"><code>DC → DR</code></div>
       </div>
     </div>
@@ -500,10 +500,10 @@ html.export .wire .flow{display:none}
             <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19c</small></div></div>
           </div>
           <table class="dbtab">
-            <thead><tr><th>Database / SID</th><th>Pluggable (PDB)</th></tr></thead>
+            <thead><tr><th>CDB</th><th>PDB</th><th>Phiên bản</th></tr></thead>
             <tbody>
-              <tr><td>Digital</td><td>Omnichannel</td></tr>
-              <tr><td>bvbhub</td><td>vccbhub</td></tr>
+              <tr><td>digital</td><td>omnichannel</td><td><span class="tbd">cập nhật</span></td></tr>
+              <tr><td>bvbhub</td><td>vccbhub</td><td>19.8</td></tr>
             </tbody>
           </table>
           <div class="net">

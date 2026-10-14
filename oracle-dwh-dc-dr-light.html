@@ -308,7 +308,7 @@ html.export .wire .flow{display:none}
 
   <header class="page-head">
     <div>
-      <div class="eyebrow">Sơ đồ kiến trúc · Oracle Database 19c <a class="switch" href="oracle-dwh-onprem-aix-light.html">← Xem hiện trạng IBM AIX</a></div>
+      <div class="eyebrow">Sơ đồ kiến trúc · Oracle Database 19.32 <a class="switch" href="oracle-dwh-onprem-aix-light.html">← Xem hiện trạng IBM AIX</a></div>
       <h1>Data Warehouse trên Exadata Cloud@Customer — DC &amp; DR</h1>
       <p class="sub">Core Banking, DigiCore (LosDB) và BankWork đồng bộ dữ liệu sang cụm <b>DC-VMC-DWH</b> qua Oracle GoldenGate; site DC nhân bản sang <b>DR-VMC-DWH</b> bằng Oracle Data Guard.</p>
     </div>
@@ -419,17 +419,17 @@ html.export .wire .flow{display:none}
             <h3>DC-VMC-DWH</h3>
           </div>
           <span class="role">Primary DB</span>
-          <span class="ver">Oracle 19c</span>
+          <span class="ver">Oracle 19.32</span>
         </div>
         <div class="vmc-body">
           <div class="nodes">
-            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 1</b><small>Oracle Database 19c</small></div></div>
-            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19c</small></div></div>
+            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 1</b><small>Oracle Database 19.32</small></div></div>
+            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19.32</small></div></div>
           </div>
           <table class="dbtab">
-            <thead><tr><th>Database / SID</th><th>Pluggable (PDB)</th></tr></thead>
+            <thead><tr><th>CDB</th><th>PDB</th><th>Phiên bản</th></tr></thead>
             <tbody>
-              <tr><td><span class="tbd">Cập nhật sau</span></td><td><span class="tbd">Cập nhật sau</span></td></tr>
+              <tr><td>dwhprod</td><td>dwhlive</td><td>19.32</td></tr>
             </tbody>
           </table>
           <div class="net">
@@ -487,17 +487,17 @@ html.export .wire .flow{display:none}
             <h3>DR-VMC-DWH</h3>
           </div>
           <span class="role sb">Standby DB</span>
-          <span class="ver">Oracle 19c</span>
+          <span class="ver">Oracle 19.32</span>
         </div>
         <div class="vmc-body">
           <div class="nodes">
-            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 1</b><small>Oracle Database 19c</small></div></div>
-            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19c</small></div></div>
+            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 1</b><small>Oracle Database 19.32</small></div></div>
+            <div class="node"><svg><use href="#i-db"/></svg><div><b>DB Node 2</b><small>Oracle Database 19.32</small></div></div>
           </div>
           <table class="dbtab">
-            <thead><tr><th>Database / SID</th><th>Pluggable (PDB)</th></tr></thead>
+            <thead><tr><th>CDB</th><th>PDB</th><th>Phiên bản</th></tr></thead>
             <tbody>
-              <tr><td><span class="tbd">Cập nhật sau</span></td><td><span class="tbd">Cập nhật sau</span></td></tr>
+              <tr><td>dwhprod</td><td>dwhlive</td><td>19.32</td></tr>
             </tbody>
           </table>
           <div class="net">
