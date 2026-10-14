@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Digital On-prem AIX</title>
+<title>Omnichannel On-prem AIX</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -105,6 +105,14 @@ code.tbd{border-style:dashed;border-color:var(--line-2);background:none}
 .db-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(to right,color-mix(in srgb,var(--role) 9%,var(--surface)),var(--surface) 70%)}
 .site.dc .db{--role:var(--ok)}
 .site.dr .db{--role:var(--sb)}
+.dbrows{display:flex;flex-direction:column;gap:6px;padding:12px 16px 0}
+html.overview .dbrows{padding-bottom:14px}
+.dbr{--c:var(--accent);display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);border-left:3px solid var(--c);background:var(--surface-2);font-size:12px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.dbr svg{flex:none;width:14px;height:16px;color:var(--c)}
+.dbr b{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;font-weight:700;color:var(--ink)}
+.dbr{display:grid;grid-template-columns:14px 170px 1fr}
+.dbr em{font-style:normal;padding-left:12px;border-left:1px solid var(--line-2)}
+.dbr em b{color:var(--c)}
 .db h3{margin:2px 0 0;font-size:16px;font-weight:700;color:color-mix(in srgb,var(--role) 85%,var(--ink))}
 .role{flex:none;margin-left:auto;font-size:11.5px;font-weight:700;letter-spacing:.02em;padding:3px 10px;border-radius:999px;color:#fff;background:var(--ok)}
 .role.sb{background:var(--sb)}
@@ -243,8 +251,8 @@ html.export .wire .flow{display:none}
   <header class="page-head">
     <div>
       <div class="eyebrow">Hiện trạng trước triển khai · IBM AIX On-premises <a class="switch" href="oracle-digital-dc-dr-light.html">Xem mô hình ExaCC →</a></div>
-      <h1>Digital (Omnichannel) trên IBM AIX On-premises — DC &amp; DR</h1>
-      <p class="sub">Người dùng và ứng dụng kết nối CSDL <b>Digital (Omnichannel)</b> qua <b>Oracle Net Services</b>. Primary DB tại DC nhân bản sang Standby DB tại DR bằng <b>Oracle Data Guard</b>; cả hai chạy RAC 2 node trên IBM AIX. Dữ liệu nguồn từ Core Banking, DigiCore (LosDB) và BankWork đổ vào qua Oracle GoldenGate.</p>
+      <h1>Omnichannel trên IBM AIX On-premises — DC &amp; DR</h1>
+      <p class="sub">Người dùng và ứng dụng kết nối CSDL <b>Omnichannel</b> qua <b>Oracle Net Services</b>. Primary DB tại DC nhân bản sang Standby DB tại DR bằng <b>Oracle Data Guard</b>; Primary chạy RAC 2 node, Standby chạy Standalone (single instance) trên IBM AIX. Dữ liệu nguồn từ Core Banking, DigiCore (LosDB) và BankWork đổ vào qua Oracle GoldenGate.</p>
     </div>
     <div class="tools">
       <ul class="legend">
@@ -280,18 +288,21 @@ html.export .wire .flow{display:none}
       <div class="sec-label"><span>Người dùng &amp; ứng dụng</span></div>
       <div class="clients">
         <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-user"/></svg></span><b>USER</b><small>Người dùng</small></div>
-        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP1</b><small class="tbd">tên ứng dụng</small></div>
-        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP2</b><small class="tbd">tên ứng dụng</small></div>
+        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP1</b></div>
+        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP2</b></div>
       </div>
       <div class="netbar" data-lane="dc"><svg><use href="#i-net"/></svg>Oracle Net Services</div>
       <article class="card db" id="db-dc">
         <div class="db-head">
           <div>
             <div class="kicker">RAC 2 node · CDB</div>
-            <h3>Digital (Omnichannel)</h3>
+            <h3>Omnichannel</h3>
           </div>
           <span class="role">Primary DB</span>
-          <span class="ver">Oracle <span class="tbd">phiên bản</span></span>
+          <span class="ver">Oracle 12.2.0.1</span>
+        </div>
+        <div class="dbrows">
+          <div class="dbr"><svg><use href="#i-db"/></svg><span>CDB <b>vccbomni</b></span><em>PDB <b>omnichanel</b></em></div>
         </div>
         <div class="db-body">
           <div class="hws">
@@ -300,7 +311,7 @@ html.export .wire .flow{display:none}
           </div>
           <dl class="facts">
             <div><dt>CDB / PDB</dt><dd>vccbomni / omnichanel</dd></div>
-            <div><dt>Kiến trúc</dt><dd>RAC · CDB</dd></div>
+            <div><dt>Kiến trúc</dt><dd>RAC 2 node · CDB</dd></div>
             <div><dt>SCAN</dt><dd><code class="tbd">cập nhật</code></dd></div>
             <div><dt>Vai trò</dt><dd>Primary</dd></div>
             <div class="wide"><dt>Nguồn GoldenGate</dt><dd>Core Banking · DigiCore (LosDB) · BankWork (qua DB Jump)</dd></div>
@@ -328,28 +339,30 @@ html.export .wire .flow{display:none}
       <div class="sec-label"><span>Người dùng &amp; ứng dụng</span></div>
       <div class="clients">
         <div class="card client" data-lane="dr"><span class="icon-tile"><svg><use href="#i-user"/></svg></span><b>USER</b><small>Người dùng</small></div>
-        <div class="card client" data-lane="dr"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP3</b><small class="tbd">tên ứng dụng</small></div>
-        <div class="card client" data-lane="dr"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP4</b><small class="tbd">tên ứng dụng</small></div>
+        <div class="card client" data-lane="dr"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP3</b></div>
+        <div class="card client" data-lane="dr"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP4</b></div>
       </div>
       <div class="netbar" data-lane="dr"><svg><use href="#i-net"/></svg>Oracle Net Services</div>
       <article class="card db" id="db-dr">
         <div class="db-head">
           <div>
-            <div class="kicker">RAC 2 node · CDB</div>
-            <h3>Digital (Omnichannel)</h3>
+            <div class="kicker">Standalone · CDB</div>
+            <h3>Omnichannel</h3>
           </div>
           <span class="role sb">Standby DB</span>
-          <span class="ver">Oracle <span class="tbd">phiên bản</span></span>
+          <span class="ver">Oracle 12.2.0.1</span>
+        </div>
+        <div class="dbrows">
+          <div class="dbr"><svg><use href="#i-db"/></svg><span>CDB <b>vccbomni</b></span><em>PDB <b>omnichanel</b></em></div>
         </div>
         <div class="db-body">
-          <div class="hws">
-            <div class="hw"><svg><use href="#i-power"/></svg><div><b>DB Node 1</b><small>IBM POWER <span class="tbd">model</span> · AIX</small></div></div>
-            <div class="hw"><svg><use href="#i-power"/></svg><div><b>DB Node 2</b><small>IBM POWER <span class="tbd">model</span> · AIX</small></div></div>
+          <div class="hws one">
+            <div class="hw"><svg><use href="#i-power"/></svg><div><b>DB Server</b><small>IBM POWER <span class="tbd">model</span> · AIX</small></div></div>
           </div>
           <dl class="facts">
             <div><dt>CDB / PDB</dt><dd>vccbomni / omnichanel</dd></div>
-            <div><dt>Kiến trúc</dt><dd>RAC · CDB</dd></div>
-            <div><dt>SCAN</dt><dd><code class="tbd">cập nhật</code></dd></div>
+            <div><dt>Kiến trúc</dt><dd>Standalone · CDB</dd></div>
+            <div><dt>Hostname</dt><dd><code class="tbd">cập nhật</code></dd></div>
             <div><dt>Vai trò</dt><dd>Physical Standby</dd></div>
           </dl>
         </div>

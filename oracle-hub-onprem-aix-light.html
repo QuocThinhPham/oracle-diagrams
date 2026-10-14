@@ -105,6 +105,14 @@ code.tbd{border-style:dashed;border-color:var(--line-2);background:none}
 .db-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(to right,color-mix(in srgb,var(--role) 9%,var(--surface)),var(--surface) 70%)}
 .site.dc .db{--role:var(--ok)}
 .site.dr .db{--role:var(--sb)}
+.dbrows{display:flex;flex-direction:column;gap:6px;padding:12px 16px 0}
+html.overview .dbrows{padding-bottom:14px}
+.dbr{--c:var(--accent);display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);border-left:3px solid var(--c);background:var(--surface-2);font-size:12px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.dbr svg{flex:none;width:14px;height:16px;color:var(--c)}
+.dbr b{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;font-weight:700;color:var(--ink)}
+.dbr{display:grid;grid-template-columns:14px 170px 1fr}
+.dbr em{font-style:normal;padding-left:12px;border-left:1px solid var(--line-2)}
+.dbr em b{color:var(--c)}
 .db h3{margin:2px 0 0;font-size:16px;font-weight:700;color:color-mix(in srgb,var(--role) 85%,var(--ink))}
 .role{flex:none;margin-left:auto;font-size:11.5px;font-weight:700;letter-spacing:.02em;padding:3px 10px;border-radius:999px;color:#fff;background:var(--ok)}
 .role.sb{background:var(--sb)}
@@ -281,8 +289,8 @@ html.export .wire .flow{display:none}
       <div class="sec-label"><span>Người dùng &amp; ứng dụng</span></div>
       <div class="clients">
         <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-user"/></svg></span><b>USER</b><small>Người dùng</small></div>
-        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP1</b><small class="tbd">tên ứng dụng</small></div>
-        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP2</b><small class="tbd">tên ứng dụng</small></div>
+        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP1</b></div>
+        <div class="card client" data-lane="dc"><span class="icon-tile"><svg><use href="#i-app"/></svg></span><b>APP2</b></div>
       </div>
       <div class="netbar" data-lane="dc"><svg><use href="#i-net"/></svg>Oracle Net Services</div>
       <article class="card db" id="db-dc">
@@ -294,6 +302,9 @@ html.export .wire .flow{display:none}
           <span class="role">Primary DB</span>
           <span class="ver">Oracle 19.8</span>
         </div>
+        <div class="dbrows">
+          <div class="dbr"><svg><use href="#i-db"/></svg><span>CDB <b>bvbhub</b></span><em>PDB <b>vccbhub</b></em></div>
+        </div>
         <div class="db-body">
           <div class="hws">
             <div class="hw"><svg><use href="#i-power"/></svg><div><b>DB Node 1</b><small>IBM POWER <span class="tbd">model</span> · AIX</small></div></div>
@@ -301,7 +312,7 @@ html.export .wire .flow{display:none}
           </div>
           <dl class="facts">
             <div><dt>CDB / PDB</dt><dd>bvbhub / vccbhub</dd></div>
-            <div><dt>Kiến trúc</dt><dd>RAC · CDB</dd></div>
+            <div><dt>Kiến trúc</dt><dd>RAC 2 node · CDB</dd></div>
             <div><dt>SCAN</dt><dd><code class="tbd">cập nhật</code></dd></div>
             <div><dt>Vai trò</dt><dd>Primary</dd></div>
             <div class="wide"><dt>Nguồn GoldenGate</dt><dd>Core Banking · DigiCore (LosDB) · BankWork (qua DB Jump)</dd></div>
