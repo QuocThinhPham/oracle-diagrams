@@ -71,25 +71,25 @@ h1{margin:6px 0;font-size:24px;line-height:1.25;font-weight:700;letter-spacing:-
 .diagram{
   position:relative;width:max-content;transform-origin:0 0;
   display:grid;
-  grid-template-columns:auto 190px auto;
+  grid-template-columns:auto 220px auto;
   grid-template-rows:auto 1fr;
   padding:30px 36px 36px;
 }
 .hint{margin:12px 2px 0;font-size:12.5px;color:var(--ink-3)}
 
-.kicker{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.kicker{display:flex;align-items:center;gap:6px;font-size:15.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
 .icon-tile{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 8px;border-radius:12px}
-.sec-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.sec-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:15.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .sec-label .count{letter-spacing:.04em;color:var(--ink-2)}
 code.tbd,.tbd{color:var(--ink-3);font-style:italic;font-weight:500}
 
 /* OCI region */
-.oci{grid-column:2;grid-row:1;justify-self:center;width:230px;margin-bottom:46px;padding:12px 14px;text-align:center;border-color:color-mix(in srgb,var(--oci) 40%,var(--line))}
+.oci{grid-column:2;grid-row:1;justify-self:center;width:300px;margin-bottom:46px;padding:12px 14px;text-align:center;border-color:color-mix(in srgb,var(--oci) 40%,var(--line))}
 .oci .icon-tile{width:40px;height:40px;margin-bottom:6px;background:var(--oci-soft);color:var(--oci)}
 .oci .icon-tile svg{width:26px;height:20px}
-.oci b{display:block;font-size:13.5px;font-weight:700}
-.oci small{display:block;font-size:11px;color:var(--ink-3)}
+.oci b{display:block;font-size:19.5px;font-weight:700}
+.oci small{display:block;font-size:16px;color:var(--ink-3)}
 
 /* sites */
 .site{grid-row:2;display:flex;flex-direction:column;padding:16px 18px 18px;border-radius:20px;border:1.5px dashed var(--site-line);background:var(--site-bg)}
@@ -97,56 +97,56 @@ code.tbd,.tbd{color:var(--ink-3);font-style:italic;font-weight:500}
 .site.dr{grid-column:3;--site-line:color-mix(in srgb,var(--dg) 38%,var(--line-2));--site-bg:color-mix(in srgb,var(--dg) 4%,var(--canvas))}
 .site-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:14px}
 .site.dr .site-head{justify-content:flex-end}  /* chừa chỗ cho đường ra OCI ở phía giữa */
-.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;font-weight:700;letter-spacing:.04em}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:17px;font-weight:700;letter-spacing:.04em}
 .badge em{font-style:normal;font-weight:500;color:var(--ink-3)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
 .dot.ok{--c:var(--ok)}
 .dot.sb{--c:var(--dg)}
-.site-title{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.site-title{font-size:18.5px;font-weight:600;color:var(--ink-2)}
 
 /* mạng khách hàng */
 .netbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface)}
 .netbar svg{flex:none;width:18px;height:18px;color:var(--ink-2)}
-.netbar b{font-size:13px;font-weight:700}
-.netbar small{display:block;font-size:11px;color:var(--ink-3)}
+.netbar b{font-size:18px;font-weight:700}
+.netbar small{display:block;font-size:16px;color:var(--ink-3)}
 .netbar .nets{margin-left:auto;display:flex;gap:5px}
-.net-chip{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 11%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.net-chip{font-size:15.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 11%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
 .net-chip.client{--c:var(--client)}
 .net-chip.backup{--c:var(--backup)}
 .net-chip.admin{--c:var(--admin)}
 
 /* hàng rack */
 .hall{display:flex;gap:12px;align-items:flex-start;margin-top:52px}
-.rack{width:220px;padding:0 0 8px;border:2px solid var(--rack);border-radius:10px;background:var(--surface);overflow:hidden}
+.rack{width:280px;padding:0 0 8px;border:2px solid var(--rack);border-radius:10px;background:var(--surface);overflow:hidden}
 .rack-top{padding:7px 8px 6px;background:var(--rack);color:#fff;text-align:center}
-.rack-top b{display:block;font-size:12px;font-weight:700;letter-spacing:.02em}
-.rack-top small{display:block;font-size:10.5px;opacity:.75}
+.rack-top b{display:block;font-size:18px;font-weight:700;letter-spacing:.02em}
+.rack-top small{display:block;font-size:15.5px;opacity:.75}
 .units{display:flex;flex-direction:column;gap:3px;padding:8px 8px 0}
-.u{display:flex;align-items:center;gap:6px;padding:3px 7px;border-radius:5px;border:1px solid var(--line);border-left:3px solid var(--uc);background:var(--surface-2);font-size:11px;font-weight:500;color:var(--ink-2);white-space:nowrap}
+.u{display:flex;align-items:center;gap:6px;padding:3px 7px;border-radius:5px;border:1px solid var(--line);border-left:3px solid var(--uc);background:var(--surface-2);font-size:16px;font-weight:500;color:var(--ink-2);white-space:nowrap}
 .u.db{--uc:var(--u-db)}
 .u.st{--uc:var(--u-st)}
 .u.sw{--uc:var(--u-sw)}
 .u.pdu{--uc:var(--line-2)}
-.u em{margin-left:auto;font-style:normal;font-size:10.5px;color:var(--ink-3)}
+.u em{margin-left:auto;font-style:normal;font-size:15.5px;color:var(--ink-3)}
 .u-sum{display:flex;flex-direction:column;gap:3px;padding:8px 8px 0}
 
-.cps{width:156px;padding:10px;border-style:dashed;border-color:var(--line-2)}
+.cps{width:250px;padding:10px;border-style:dashed;border-color:var(--line-2)}
 .cps .kicker{justify-content:center;margin-bottom:6px}
-.cps-srv{display:flex;align-items:center;gap:5px;padding:5px 6px;white-space:nowrap;margin-top:4px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);font-size:11px;color:var(--ink-2)}
+.cps-srv{display:flex;align-items:center;gap:5px;padding:5px 6px;white-space:nowrap;margin-top:4px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);font-size:16px;color:var(--ink-2)}
 .cps-srv svg{flex:none;width:13px;height:13px;color:var(--ink-3)}
-.cps-srv code{margin-left:auto;font-size:10px;color:var(--ink)}
+.cps-srv code{margin-left:auto;font-size:15px;color:var(--ink)}
 
 .vmcs{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line-2)}
 .vmc-chips{display:flex;flex-wrap:wrap;gap:6px}
-.vmc-chip{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}
+.vmc-chip{font-size:17.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}
 
 /* WAN DC–DR */
 .mid{grid-column:2;grid-row:2;position:relative}
 .wan{position:absolute;left:14px;right:14px;top:0;padding:10px 8px;text-align:center;border-color:color-mix(in srgb,var(--wan) 40%,var(--line))}
 .wan .icon-tile{width:34px;height:34px;margin-bottom:4px;border-radius:10px;background:var(--wan-soft);color:var(--wan)}
 .wan .icon-tile svg{width:18px;height:18px}
-.wan b{display:block;font-size:12.5px;font-weight:700}
-.wan small{display:block;font-size:10.5px;color:var(--ink-3)}
+.wan b{display:block;font-size:18.5px;font-weight:700}
+.wan small{display:block;font-size:15.5px;color:var(--ink-3)}
 
 /* wires */
 .wires{position:absolute;left:0;top:0;z-index:2;pointer-events:none;overflow:visible}
@@ -196,7 +196,9 @@ html:not(.overview) .legend li:has(.sw-up){display:none}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 html.snap .wire .flow{display:none}
 html.snap .diagram{padding-top:62px}
-.snap-legend{position:absolute;top:22px;right:36px;font-size:13.5px;font-weight:500;color:var(--ink)}
+.snap-legend{position:absolute;top:22px;right:36px;flex-wrap:nowrap;white-space:nowrap;font-size:18.5px;font-weight:500;color:var(--ink)}
+.diagram{font-size:19px}
+.diagram .badge,.diagram .badge em,.role,.ver,.site-title,.kicker,.client b,.client small,.sec-label{white-space:nowrap}
 
 @media (max-width:640px){
   .page{padding:20px 16px 24px}
